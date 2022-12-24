@@ -3,9 +3,10 @@ package com.hoho.phonecallapp.phonecallui;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.telecom.Call;
 import android.telecom.VideoProfile;
+
+import androidx.annotation.RequiresApi;
 
 /**
  * author: aJIEw

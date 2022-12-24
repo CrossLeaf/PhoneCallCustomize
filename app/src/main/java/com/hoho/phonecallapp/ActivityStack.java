@@ -1,6 +1,6 @@
 package com.hoho.phonecallapp;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ public class ActivityStack {
 
     private static final ActivityStack INSTANCE = new ActivityStack();
 
-    private List<Activity> activities = new ArrayList<>();
+    private List<AppCompatActivity> activities = new ArrayList<>();
 
     public static ActivityStack getInstance() {
         return INSTANCE;
     }
 
-    public void addActivity(Activity activity) {
+    public void addActivity(AppCompatActivity activity) {
         activities.add(activity);
     }
 
-    public Activity getTopActivity() {
+    public AppCompatActivity getTopActivity() {
         if (activities.isEmpty()) {
             return null;
         }
@@ -36,7 +36,7 @@ public class ActivityStack {
         }
     }
 
-    public void finishActivity(Activity activity) {
+    public void finishActivity(AppCompatActivity activity) {
         if (activity != null) {
             activities.remove(activity);
             activity.finish();
@@ -44,7 +44,7 @@ public class ActivityStack {
     }
 
     public void finishActivity(Class activityClass) {
-        for (Activity activity : activities) {
+        for (AppCompatActivity activity : activities) {
             if (activity.getClass().equals(activityClass)) {
                 finishActivity(activity);
             }
@@ -53,7 +53,7 @@ public class ActivityStack {
 
     public void finishAllActivity() {
         if (!activities.isEmpty()) {
-            for (Activity activity : activities) {
+            for (AppCompatActivity activity : activities) {
                 activity.finish();
                 activities.remove(activity);
             }

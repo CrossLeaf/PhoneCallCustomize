@@ -1,23 +1,31 @@
 package com.hoho.phonecallapp;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.telecom.TelecomManager;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.aykuttasil.callrecord.CallRecord;
 import com.hoho.phonecallapp.listenphonecall.CallListenerService;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import ezy.assist.compat.SettingsCompat;
 
@@ -31,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Switch switchListenCall;
     private CompoundButton.OnCheckedChangeListener switchCallCheckChangeListener;
+    private CallRecord callRecord;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +47,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initView();
+        initRecorder();
+    }
+
+    private void initRecorder() {
+        callRecord = new CallRecord.Builder(this)
+                .setLogEnable(true)
+                .setRecordFileName("")
+                .setRecordDirName("CallRecorderTest")
+                .setRecordDirPath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath())
+                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
+                .setOutputFormat(MediaRecorder.OutputFormat.AMR_WB)
+                .setAudioSource(MediaRecorder.AudioSource.MIC)
+                .setShowSeed(true)
+                .setShowPhoneNumber(true)
+                .build();
+        callRecord.startCallReceiver();
     }
 
     private void initView() {
@@ -152,4 +177,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    private int PERMISSIONS_REQUEST_CODE = 123;
+    List<String> permissionList = new ArrayList(Arrays.asList(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.PROCESS_OUTGOING_CALLS));
+
 }
