@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -11,13 +12,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.telecom.TelecomManager;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.aykuttasil.callrecord.CallRecord;
 import com.hoho.phonecallapp.listenphonecall.CallListenerService;
@@ -107,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         switchListenCall.setOnCheckedChangeListener(switchCallCheckChangeListener);
+
+        TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setOnClickListener(v -> {
+            callPhone();
+        });
     }
 
     private void askForDrawOverlay() {
@@ -187,4 +197,22 @@ public class MainActivity extends AppCompatActivity {
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.PROCESS_OUTGOING_CALLS));
 
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void callPhone() {
+        Uri uri = Uri.fromParts("tel", "+886999999999", null);
+        Bundle extras = new Bundle();
+        extras.putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, true);
+        TelecomManager telecomManager = (TelecomManager) getSystemService(TELECOM_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "沒有撥號權限", Toast.LENGTH_LONG).show();
+            return;
+        }
+        telecomManager.placeCall(uri, extras);
+
+//        Intent intent = new Intent(Intent.ACTION_DIAL);
+//        intent.setData(Uri.parse("tel:+886928977229"));
+//        startActivity(intent);
+    }
 }
